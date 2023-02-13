@@ -9,6 +9,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(bearerToken());
 app.use(express.json());
+app.use(express.static("./src/public"));
 
 app.get("/", (req, res) => {
   res.status(200).send("<h1> SOCIAL MEDIA API </h1>");
@@ -24,6 +25,7 @@ dbConf.getConnection((err, connection) => {
 });
 
 // configure Route
-const { usersRouter } = require("./src/routers");
+const { usersRouter, contentRouter } = require("./src/routers");
 app.use("/users", usersRouter);
+app.use("/content", contentRouter);
 app.listen(PORT, () => console.log("API RUNNING ON PORT ", PORT));

@@ -12,6 +12,15 @@ module.exports = {
       return res.status(200).send(result);
     });
   },
+  getDatabyId: (req, res) => {
+    let { username, email } = req.body;
+    dbConf.query(`SELECT username,email,bio,fullname FROM users WHERE id=${dbConf.escape(req.decript.id)}`, (err, result) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      return res.status(200).send(result);
+    });
+  },
   regis: async (req, res) => {
     try {
       let { username, email, password, phone, birthday } = req.body;
@@ -27,7 +36,8 @@ module.exports = {
         let resultInsert = await dbQuery(
           ` INSERT INTO users (username,email,password, phone,birthday) VALUES (${dbConf.escape(username)}, ${dbConf.escape(email)}, ${dbConf.escape(newPass)}, ${dbConf.escape(phone)}, ${dbConf.escape(birthday)});`
         );
-        let token = createToken({ id: resultInsert.inssertId, username, email });
+        console.log("cek insert", resultInsert);
+        let token = createToken({ id: resultInsert.insertId, username, email });
         transport.sendMail(
           {
             from: "Facebookclone admin",
@@ -121,4 +131,47 @@ module.exports = {
       });
     });
   },
+  profilImg: (req, res) => {
+    console.log(req.files);
+    console.log("cek decrop img", req.decript);
+    // penyimpanan ke database ; /imgProfile/filename
+    dbConf.query(`UPDATE users SET profile=${dbConf.escape(`/imgProfile/${req.files[0].filename}`)} WHERE id=${dbConf.escape(req.decript.id)}`, (err, results) => {
+      if (err) {
+        return res.status(500).send({
+          success: false,
+          message: err,
+        });
+      }
+      return res.status(200).send({
+        success: true,
+        message: "Upload success ✅",
+      });
+    });
+  },
+  // updatefullname: (req, res) => {
+  //   let { fullname } = req.body;
+  //   dbConf.query(` UPDATE users SET fullname=${dbConf.escape(fullname)}WHERE id=${dbConf.escape(req.decript.id)}`, (errinsert, resultInsert) => {
+  //     if (errinsert) {
+  //       console.log(errinsert);
+  //       return res.status(500).send(errinsert);
+  //     }
+  //     res.status(200).send({
+  //       success: true,
+  //       message: "Your fullname has bee updated",
+  //     });
+  //   });
+  // },
+  // updateBio: (req, res) => {
+  //   let { bio } = req.body;
+  //   dbConf.query(` UPDATE users SET bio=${dbConf.escape(bio)} WHERE id=${dbConf.escape(req.decript.id)}`, (errinsert, resultInsert) => {
+  //     if (errinsert) {
+  //       console.log(errinsert);
+  //       return res.status(500).send(errinsert);
+  //     }
+  //     res.status(200).send({
+  //       success: true,
+  //       message: "Your Bio has bee updated",
+  //     });
+  //   });
+  // },
 };
