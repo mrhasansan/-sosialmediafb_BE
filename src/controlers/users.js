@@ -12,15 +12,6 @@ module.exports = {
       return res.status(200).send(result);
     });
   },
-  getDatabyId: (req, res) => {
-    let { username, email } = req.body;
-    dbConf.query(`SELECT username,email,bio,fullname FROM users WHERE id=${dbConf.escape(req.decript.id)}`, (err, result) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      return res.status(200).send(result);
-    });
-  },
   regis: async (req, res) => {
     try {
       let { username, email, password, phone, birthday } = req.body;
@@ -107,7 +98,7 @@ module.exports = {
   },
   keepLogin: (req, res) => {
     console.log(req.decript);
-    dbConf.query(`SELECT id, username,phone, password FROM users WHERE id=${dbConf.escape(req.decript.id)}`, (err, result) => {
+    dbConf.query(`SELECT * FROM users WHERE id=${dbConf.escape(req.decript.id)}`, (err, result) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
@@ -148,30 +139,20 @@ module.exports = {
       });
     });
   },
-  // updatefullname: (req, res) => {
-  //   let { fullname } = req.body;
-  //   dbConf.query(` UPDATE users SET fullname=${dbConf.escape(fullname)}WHERE id=${dbConf.escape(req.decript.id)}`, (errinsert, resultInsert) => {
-  //     if (errinsert) {
-  //       console.log(errinsert);
-  //       return res.status(500).send(errinsert);
-  //     }
-  //     res.status(200).send({
-  //       success: true,
-  //       message: "Your fullname has bee updated",
-  //     });
-  //   });
-  // },
-  // updateBio: (req, res) => {
-  //   let { bio } = req.body;
-  //   dbConf.query(` UPDATE users SET bio=${dbConf.escape(bio)} WHERE id=${dbConf.escape(req.decript.id)}`, (errinsert, resultInsert) => {
-  //     if (errinsert) {
-  //       console.log(errinsert);
-  //       return res.status(500).send(errinsert);
-  //     }
-  //     res.status(200).send({
-  //       success: true,
-  //       message: "Your Bio has bee updated",
-  //     });
-  //   });
-  // },
+  editfullname: (req, res) => {
+    let { fullname, bio } = req.body;
+    dbConf.query(`UPDATE users SET fullname=(${dbConf.escape(fullname)} WHERE id=${dbConf.escape(req.decript.id)}`, (errInsert, resultinsert) => {
+      if (errInsert) {
+        console.log(errInsert);
+        return res.status(500).send({
+          success: false,
+          message: errInsert,
+        });
+      }
+      res.status(200).send({
+        succest: true,
+        message: "Update your profile success ✅",
+      });
+    });
+  },
 };
