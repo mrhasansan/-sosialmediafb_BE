@@ -56,22 +56,6 @@ module.exports = {
       console.log(error);
       return res.status(500).send(error);
     }
-    // let { username, email, password, phone, birthday } = req.body;
-    // const newPass = hasPassword(password);
-    // console.log(newPass);
-    // dbConf.query(
-    //   `INSERT INTO users (username,email,password,phone,birthday) VALUES (${dbConf.escape(username)}, ${dbConf.escape(email)}, ${dbConf.escape(newPass)}, ${dbConf.escape(phone)}, ${dbConf.escape(birthday)})`,
-    //   (errInsert, resultinsert) => {
-    //     if (errInsert) {
-    //       console.log(errInsert);
-    //       return res.status(500).send(errInsert);
-    //     }
-    //     res.status(200).send({
-    //       succest: true,
-    //       message: "Registrasi your account succest",
-    //     });
-    //   }
-    // );
   },
   login: (req, res) => {
     console.log(req.body);
@@ -123,10 +107,12 @@ module.exports = {
     });
   },
   profilImg: (req, res) => {
-    console.log(req.files);
-    console.log("cek decrop img", req.decript);
+    let { fullnameinput, bioinput } = JSON.parse(req.body.data);
+    console.log("datanew", req.body.data);
+    console.log("filenew", req.files);
+    console.log("cek decrip img", req.decript.id);
     // penyimpanan ke database ; /imgProfile/filename
-    dbConf.query(`UPDATE users SET profile=${dbConf.escape(`/imgProfile/${req.files[0].filename}`)} WHERE id=${dbConf.escape(req.decript.id)}`, (err, results) => {
+    dbConf.query(`UPDATE users SET fullname=${dbConf.escape(fullnameinput)},bio=${dbConf.escape(bioinput)} ,profile=${dbConf.escape(`/imgProfile/${req.files[0].filename}`)} WHERE id=${dbConf.escape(req.decript.id)}`, (err, results) => {
       if (err) {
         return res.status(500).send({
           success: false,
@@ -135,23 +121,7 @@ module.exports = {
       }
       return res.status(200).send({
         success: true,
-        message: "Upload success ✅",
-      });
-    });
-  },
-  editfullname: (req, res) => {
-    let { fullname, bio } = req.body;
-    dbConf.query(`UPDATE users SET fullname=(${dbConf.escape(fullname)} WHERE id=${dbConf.escape(req.decript.id)}`, (errInsert, resultinsert) => {
-      if (errInsert) {
-        console.log(errInsert);
-        return res.status(500).send({
-          success: false,
-          message: errInsert,
-        });
-      }
-      res.status(200).send({
-        succest: true,
-        message: "Update your profile success ✅",
+        message: "Update Profile success ✅",
       });
     });
   },

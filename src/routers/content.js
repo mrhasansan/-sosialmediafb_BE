@@ -6,4 +6,5 @@ const { contentControlers } = require("../controlers");
 
 route.get("/", contentControlers.getData);
 route.post("/status", contentControlers.upContent);
+// route.put("/comment", contentControlers.commentupdate);
 module.exports = route;
